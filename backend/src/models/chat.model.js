@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const chatSchema = mongoose.Schema(
   {
     user: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       require: true,
     },

@@ -1,4 +1,7 @@
 const { GoogleGenAI } = require("@google/genai");
+const path = require("path");
+const fs = require("fs");
+const { readDocs, readExcel } = require("../../utils/fileRead");
 
 const ai = new GoogleGenAI({});
 
@@ -54,4 +57,65 @@ Now generate a title for:
   }
 }
 
-module.exports = { chatTextResponse, chatTitleGenerator };
+async function docsReading({ file, files, prompt }) {
+  const ext = path.extname(files.originalname).toLowerCase();
+  let doc;
+
+  switch (ext) {
+    case ".docx":
+    case ".doc":
+      console.log("DocsFile:");
+      doc = await readDocs(file);
+      break;
+
+    case ".xlsx":
+    case ".xls":
+      console.log("Excel file:");
+      doc = await readExcel(file);
+      break;
+
+    // case ".pdf":
+    //   console.log("PDF file:");
+    //   doc = await readPdf(file);
+    //   break;
+
+    case ".txt":
+    case ".md":
+    case ".csv":
+    case ".json":
+    case ".js":
+    case ".ts":
+    case ".c":
+    case ".cpp":
+    case ".py":
+    case ".java":
+    case ".html":
+    case ".css":
+      console.log("Plain/code file:");
+      doc = fs.readFileSync(file, "utf-8");
+      break;
+
+    default:
+      throw new Error(`Unsupported file type: ${ext}`);
+  }
+
+  const contents = [
+    { text: prompt },
+    {
+      inlineData: {
+        mimeType: "text/plain", // always text for Gemini
+        data: doc.base64 || Buffer.from(doc).toString("base64"),
+      },
+    },
+  ];
+
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents,
+  });
+
+  console.log(response.text);
+  return response.text;
+}
+
+module.exports = { chatTextResponse, chatTitleGenerator, docsReading };
