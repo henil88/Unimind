@@ -10,19 +10,23 @@ const msgSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "chat",
     },
-    content: {
+    type: {
       type: String,
-      require: true,
+      enum: ["text", "audio", "file"],
+      required: true,
     },
+    content: {
+      type: String, // usually text
+    },
+    fileUrl: String, // for files
+    audioUrl: String, // for audio
     role: {
       type: String,
       enum: ["user", "model"],
       default: "user",
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const msgModel = mongoose.model("msg", msgSchema);

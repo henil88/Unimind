@@ -9,7 +9,7 @@ async function handleUpload(req, res) {
 
     const filePath = req.file.path;
     const files = req.file;
-    const ext = path.extname(req.file.originalname).toLowerCase(); // includes the dot
+    const ext = path.extname(req.file.originalname).toLowerCase();
 
     let prompt;
 
