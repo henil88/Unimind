@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../store/slice/authSlice/authAction";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const {
@@ -11,12 +12,12 @@ const Login = () => {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
   const formData = (data) => {
-    dispatch(userLogin(data));
+    dispatch(userLogin(data, navigate));
   };
 
   return (

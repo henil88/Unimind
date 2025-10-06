@@ -6,6 +6,5 @@ export const registerUserApi = async (data) =>
 export const loginUser = async (data) =>
   await axiosInstance.post("/auth/login", data);
 
-export const googleAuthApi = (data) => {
-  axiosInstance.get("/auth/loginOauth2");
-};
+export const googleAuthApi = async (data) =>
+  await axiosInstance.get("/auth/loginOauth2");

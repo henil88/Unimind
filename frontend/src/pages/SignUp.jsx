@@ -1,5 +1,8 @@
+import { registerUser } from "@/store/slice/authSlice/authAction";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const {
@@ -9,9 +12,22 @@ const SignUp = () => {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
 
   const formData = (data) => {
-    console.log(data);
+    const payload = {
+      email: data.email,
+      fullName: {
+        firstName: data.firstName,
+        secondName: data.secondName,
+      },
+      password: data.password,
+    };
+
+    console.log(payload);
+    dispatch(registerUser(payload, navigate));
   };
 
   return (
@@ -48,11 +64,11 @@ const SignUp = () => {
               type="text"
               placeholder="First Name"
               autoComplete="off"
-              {...register("first", { required: "First Name Required" })}
+              {...register("firstName", { required: "First Name Required" })}
               className="border p-2 rounded w-full"
             />
-            {errors.first && (
-              <p className="text-red-500 text-sm">{errors.first.message}</p>
+            {errors.firstName && (
+              <p className="text-red-500 text-sm">{errors.firstName.message}</p>
             )}
           </div>
           <div className="flex flex-col flex-1">
@@ -60,11 +76,13 @@ const SignUp = () => {
               type="text"
               placeholder="Last Name"
               autoComplete="off"
-              {...register("last", { required: "Last Name Required" })}
+              {...register("secondName", { required: "Last Name Required" })}
               className="border p-2 rounded w-full"
             />
-            {errors.last && (
-              <p className="text-red-500 text-sm">{errors.last.message}</p>
+            {errors.secondName && (
+              <p className="text-red-500 text-sm">
+                {errors.secondName.message}
+              </p>
             )}
           </div>
         </div>
@@ -91,13 +109,17 @@ const SignUp = () => {
         {errors.password && (
           <p className="text-red-500 text-sm">{errors.password.message}</p>
         )}
-
+        {/* Error from Redux */}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         {/* Submit */}
         <button
           type="submit"
-          className="bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
+          disabled={loading}
+          className={`bg-orange-500 text-white py-2 rounded hover:bg-orange-600 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Sign Up
+          {loading ? "Siging up..." : "Sign Up"}
         </button>
       </form>
     </div>

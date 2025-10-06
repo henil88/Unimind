@@ -22,6 +22,7 @@ const url = oAuth2.generateAuthUrl({
   scope: scopes,
 });
 
+
 console.log("Login with Google here:", url);
 
 module.exports = oAuth2;

@@ -103,7 +103,7 @@ async function docsReading({ file, files, prompt }) {
     { text: prompt },
     {
       inlineData: {
-        mimeType: "text/plain", // always text for Gemini
+        mimeType: "text/plain", 
         data: doc.base64 || Buffer.from(doc).toString("base64"),
       },
     },
