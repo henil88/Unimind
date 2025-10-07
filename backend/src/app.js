@@ -15,6 +15,9 @@ app.use(
   })
 );
 
+app.get("/",(req,res)=>{
+  res.send("connect")
+})
 app.use("/api/auth", authRoute);
 app.use("/api/chat", chatRoute);
 app.use("/api/msg", uploadRoute);
