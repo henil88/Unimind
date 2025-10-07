@@ -3,12 +3,6 @@ const { google } = require("googleapis");
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-/* this is use for ganrate redirect link*/
-const scopes = [
-  "https://www.googleapis.com/auth/userinfo.email",
-  "https://www.googleapis.com/auth/userinfo.profile",
-];
-
 const oAuth2 = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
@@ -16,13 +10,18 @@ const oAuth2 = new google.auth.OAuth2(
   "http://localhost:3000/api/auth/loginOauth2"
 );
 
-const url = oAuth2.generateAuthUrl({
-  access_type: "offline",
-  prompt: "consent",
-  scope: scopes,
-});
+async function googleLink(req, res) {
+  /* this is use for ganrate redirect link*/
+  const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+  ];
 
-
-console.log("Login with Google here:", url);
-
-module.exports = oAuth2;
+  const url = oAuth2.generateAuthUrl({
+    access_type: "offline",
+    prompt: "consent select_account",
+    scope: scopes,
+  });
+  res.redirect(url);
+}
+module.exports = { oAuth2, googleLink };

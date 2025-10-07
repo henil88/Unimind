@@ -1,3 +1,4 @@
+import Googleauth from "@/components/Googleauth";
 import { registerUser } from "@/store/slice/authSlice/authAction";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -121,6 +122,7 @@ const SignUp = () => {
         >
           {loading ? "Siging up..." : "Sign Up"}
         </button>
+        <Googleauth />
       </form>
     </div>
   );

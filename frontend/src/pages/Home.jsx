@@ -24,21 +24,16 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 2️⃣ Initialize socket & listen to events
   useEffect(() => {
-    // ✅ Initialize socket first
     initSocket(import.meta.env.VITE_SOCKET_URL);
 
-    // ✅ Then start listening to socket events
     dispatch(listenChatEvent());
 
-    // Optional: cleanup on unmount
     return () => {
-      // disconnectSocket(); // uncomment if you want to disconnect on leaving
+      // disconnectSocket();
     };
   }, [dispatch]);
 
-  // 3️⃣ Auto scroll chat on new messages
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =

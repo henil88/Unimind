@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../store/slice/authSlice/authAction";
 import { useNavigate } from "react-router-dom";
+import Googleauth from "@/components/Googleauth";
 
 const Login = () => {
   const {
@@ -76,6 +77,7 @@ const Login = () => {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+        <Googleauth />
       </form>
     </div>
   );

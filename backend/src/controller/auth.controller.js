@@ -1,7 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const oAuth2 = require("../../utils/googleAuth");
+const { oAuth2 } = require("../../utils/googleAuth");
 const { google } = require("googleapis");
 
 async function registerUser(req, res) {
@@ -68,7 +68,7 @@ async function loginUser(req, res) {
     },
   });
 }
-
+/*
 async function oAuth2Login(req, res) {
   const code = req.query.code || req.body.code;
   try {
@@ -107,4 +107,47 @@ async function oAuth2Login(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+*/
+
+async function oAuth2Login(req, res) {
+  const code = req.query.code || req.body.code;
+  const redirectOnError = req.query.redirect || req.get("Referer") || "/";
+
+  try {
+    const { tokens } = await oAuth2.getToken(code);
+    oAuth2.setCredentials(tokens);
+
+    const userDetails = google.oauth2({ version: "v2", auth: oAuth2 });
+    const userRes = await userDetails.userinfo.get();
+    const { email, name } = userRes.data;
+
+    let [firstName, ...rest] = name ? name.split(" ") : ["", ""];
+    let secondName = rest.join(" ") || "";
+
+    let isUserExist = await userModel.findOne({ email });
+    if (!isUserExist) {
+      isUserExist = await userModel.create({
+        email,
+        fullName: { firstName, secondName },
+      });
+    }
+
+    const token = jwt.sign({ id: isUserExist._id }, process.env.JWT_SECRET);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    //  Success: redirect to frontend home
+    res.redirect(`${process.env.FRONTEND_URL}/`);
+  } catch (error) {
+    console.log("OAuth2 login error:", error);
+
+    // Failure: redirect back to where request came from
+    res.redirect(redirectOnError);
+  }
+}
+
 module.exports = { registerUser, loginUser, oAuth2Login };
