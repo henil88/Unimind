@@ -319,7 +319,7 @@ async function chatTextResponse(prompt) {
 - Ensure all JSON responses are clean, parseable, and render-ready for charts.`,
   };
 
-  // 🧠 Call the AI model
+  // Call the AI model
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
@@ -329,13 +329,13 @@ async function chatTextResponse(prompt) {
   let parsedResponse;
 
   try {
-    // ✅ Try to clean and parse JSON
+    //  Try to clean and parse JSON
     parsedResponse = extractCleanJson(response.text);
   } catch (err) {
     parsedResponse = { text: response.text, charts: [] };
   }
 
-  // ✅ Always ensure charts exist
+  //  Always ensure charts exist
   if (!parsedResponse.charts) parsedResponse.charts = [];
 
   return parsedResponse; // return a real object, not string
