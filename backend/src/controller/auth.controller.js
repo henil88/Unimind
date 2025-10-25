@@ -111,8 +111,12 @@ async function oAuth2Login(req, res) {
 */
 
 async function oAuth2Login(req, res) {
-  const code = req.query.code || req.body.code;
-  const redirectOnError = req.query.redirect || req.get("Referer") || "/";
+  const { code } = req.query || req.body;
+  const redirectOnError = process.env.FRONTEND_URL;
+
+  if (!code) {
+    return res.redirect(redirectOnError);
+  }
 
   try {
     const { tokens } = await oAuth2.getToken(code);
