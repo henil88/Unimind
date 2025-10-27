@@ -1,26 +1,22 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import MDEditor from "@uiw/react-md-editor";
 import Chart from "react-apexcharts";
 
-const Botmsg = ({ msg }) => {
-  // --- 1. Parse msg safely ---
+export default function Botmsg({ msg }) {
+  // Parse msg into markdown text and charts array
   let parsedMsg = msg;
   if (typeof msg === "string") {
     try {
       parsedMsg = JSON.parse(msg);
     } catch (err) {
-      parsedMsg = { text: msg }; // Not JSON, fallback to plain text
+      parsedMsg = { text: msg, charts: [] }; // fallback no charts
     }
   }
 
-  const msgText = parsedMsg?.text || "";
+  const markdown = parsedMsg?.text || "";
   const msgCharts = parsedMsg?.charts || [];
 
-  // --- 2. Chart options generator ---
+  // Chart options generator function
   const makeOptions = (data) => ({
     chart: {
       type: "area",
@@ -35,7 +31,12 @@ const Botmsg = ({ msg }) => {
     },
     fill: {
       type: "gradient",
-      gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0, stops: [0, 90, 100] },
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.3,
+        opacityTo: 0,
+        stops: [0, 90, 100],
+      },
     },
     grid: { borderColor: "#374151", strokeDashArray: 3 },
     xaxis: {
@@ -49,87 +50,64 @@ const Botmsg = ({ msg }) => {
   });
 
   return (
-    <div className="p-3 my-2 bg-gray-900 text-white rounded-lg shadow max-w-full space-y-4">
-      {/* Markdown / Text Rendering */}
-      {msgText && (
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw]}
-          components={{
-            code({ inline, className, children, ...props }) {
-              const match = /language-(\w+)/.exec(className || "");
-              const detectedLang = match?.[1] || "plaintext";
+    <div className="p-3 my-2 text-black rounded-lg max-w-full space-y-8 break-normal">
+      {/* Markdown Preview */}
+      <MDEditor.Markdown
+        source={markdown}
+        style={{
+          fontSize: "1em",
+          color:"black",
+          backgroundColor: "#FFFBEB", // Tailwind bg-gray-900
+          borderRadius: "0.5rem",
+          padding: "1rem",
+          // whiteSpace: "pre-wrap",
+        }}
+      />
 
-              return !inline ? (
-                <div className="relative my-2">
-                  <span className="absolute top-1 right-2 text-xs text-gray-400">{detectedLang}</span>
-                  <SyntaxHighlighter
-                    style={oneDark}
-                    language={detectedLang}
-                    PreTag="div"
-                    showLineNumbers
-                    wrapLongLines
-                    {...props}
-                  >
-                    {String(children).replace(/\n$/, "")}
-                  </SyntaxHighlighter>
-                </div>
-              ) : (
-                <code className="bg-gray-800 px-1 py-0.5 rounded text-xs">{children}</code>
-              );
-            },
-          }}
-        >
-          {msgText}
-        </ReactMarkdown>
-      )}
-
-      {/* Chart Rendering */}
+      {/* Charts Rendering */}
       {msgCharts.map((chart, idx) => {
         const options = makeOptions(chart.data);
-        const series = [{ name: chart.seriesName || "Value", data: chart.data.map((d) => d.value) }];
+        const series = [
+          {
+            name: chart.seriesName || "Value",
+            data: chart.data.map((d) => d.value),
+          },
+        ];
         const meta = chart.meta || {};
 
         return (
-          <div key={idx} className="w-full bg-gray-800 rounded-xl p-4 shadow-md space-y-3">
-            {/* Optional Header */}
+          <div
+            key={idx}
+            className="w-full bg-[#FFFBEB] rounded-xl p-4 shadow-md space-y-3"
+          >
             {meta.title && (
-              <div>
-                <h2 className="text-lg font-semibold">{meta.title}</h2>
-                {meta.price && (
-                  <div className="flex items-end gap-2 mt-1">
-                    <span className="text-3xl font-bold">{meta.price}</span>
-                    {meta.change && (
-                      <span className={`text-sm ${meta.change.includes("-") ? "text-red-500" : "text-green-500"}`}>
-                        {meta.change}
-                      </span>
-                    )}
-                  </div>
-                )}
-                {meta.subtext && <div className="text-gray-400 text-sm">{meta.subtext}</div>}
-              </div>
+              <h2 className="text-lg font-semibold">{meta.title}</h2>
             )}
 
-            {/* Chart */}
             <Chart options={options} series={series} type="area" height={300} />
 
-            {/* Optional time range buttons */}
+            {meta.subtext && (
+              <div className="text-gray-700 text-sm">{meta.subtext}</div>
+            )}
+
             {meta.ranges && (
               <div className="flex justify-center gap-2 mt-2">
                 {meta.ranges.map((range) => (
-                  <button key={range} className="px-3 py-1 rounded-md text-xs bg-gray-700 hover:bg-gray-600">
+                  <button
+                    key={range}
+                    className="px-3 py-1 rounded-md text-xs bg-gray-700 hover:bg-gray-600"
+                  >
                     {range}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Optional stats row */}
             {meta.stats && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-gray-300 mt-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-gray-700 mt-3">
                 {Object.entries(meta.stats).map(([label, value]) => (
                   <div key={label}>
-                    <span className="block text-gray-400">{label}</span>
+                    <span className="block text-gray-700">{label}</span>
                     {value}
                   </div>
                 ))}
@@ -140,6 +118,4 @@ const Botmsg = ({ msg }) => {
       })}
     </div>
   );
-};
-
-export default Botmsg;
+}

@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Googleauth = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  // const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const { loading, error } = useSelector((state) => state.auth);
 
   const loginWithGoogle = () => {
     window.location.href = import.meta.env.VITE_REDIREC_URL;

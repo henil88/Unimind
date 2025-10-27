@@ -18,6 +18,9 @@ const Home = () => {
 
   const chatContainerRef = useRef(null);
 
+
+
+  
   // 1️⃣ Load animation timer
   useEffect(() => {
     const timer = setTimeout(() => setTitleLoad(true), 3000);
@@ -75,8 +78,9 @@ const Home = () => {
                   <h1>{userMessages[idx].text || userMessages[idx]}</h1>
                 </div>
               )}
-              <div className="self-start  w-full">
-                <Botmsg msg={botMsg} />
+
+              <div className="self-start w-full text-black">
+                  <Botmsg msg={botMsg} />
               </div>
             </React.Fragment>
           ))}
