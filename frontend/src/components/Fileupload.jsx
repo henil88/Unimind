@@ -1,13 +1,17 @@
+import { uploadFile } from "@/store/slice/ChatSlice/uploadFileAction";
 import React, { useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const Fileupload = () => {
-  const [file, setFile] = useState(null);
+const Fileupload = ({ file, setFile, promt }) => {
   const fileInputRef = useRef(null);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.file || {});
 
   const handleUpload = (event) => {
     const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-    if (selectedFile) {
+    if (!selectedFile) return;
+    else {
+      setFile(selectedFile);
       console.log("File Name:", selectedFile.name);
       console.log("File Type:", selectedFile.type);
     }
@@ -39,7 +43,7 @@ const Fileupload = () => {
 
       {/* Custom Button/Text */}
       <div
-        className="xs:top-[50%] sm:top-[18%] ms:top-[21%] xl:top-[25%]"
+        className="xs:top-[37%] top-[34%] sm:top-[10%] ms:top-[11%] xl:top-[11%]"
         onClick={handleCustomClick}
         style={{
           cursor: "pointer",
@@ -66,6 +70,8 @@ const Fileupload = () => {
           </p>
         </div>
       )}
+      {loading && <p className="text-xs text-blue-500">Uploading...</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 };

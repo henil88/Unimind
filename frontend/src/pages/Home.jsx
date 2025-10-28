@@ -105,7 +105,7 @@ const Home = () => {
           titleLoad ? "opacity-100" : "opacity-0 translate-y-5"
         }`}
         style={{
-          top: convStart ? "45vh" : "73vh",
+          top: convStart ? "45vh" : "62vh",
         }}
       >
         <Input

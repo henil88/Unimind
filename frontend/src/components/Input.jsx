@@ -5,10 +5,12 @@ import "remixicon/fonts/remixicon.css";
 import { useDispatch } from "react-redux";
 import { sendChatMessage } from "@/store/slice/ChatSlice/chatAction";
 import Fileupload from "./Fileupload";
+import { uploadFile } from "@/store/slice/ChatSlice/uploadFileAction";
 
 const Input = ({ convStart, setConvStart }) => {
   const { register, handleSubmit, reset, watch } = useForm();
   const [showComponent, setShowComponent] = useState(false);
+  const [file, setFile] = useState(null);
   const textareaRef = useRef(null);
   const message = watch("message", "");
   const dispatch = useDispatch();
@@ -49,9 +51,17 @@ const Input = ({ convStart, setConvStart }) => {
 
     if (convStart) setConvStart(false);
 
-    // Dispatch message to Redux + socket
-    dispatch(sendChatMessage(text));
-
+    if (file) {
+      // If file exists → upload file + prompt
+      const formData = new FormData();
+      formData.append("file", file, file.name);
+      formData.append("prompt", message || ""); // message is the prompt from textarea
+      dispatch(uploadFile(formData));
+      setFile(null); // clear file after upload
+    } else {
+      // If no file → send normal chat message
+      dispatch(sendChatMessage(message));
+    }
     // Clear input
     reset();
   };
@@ -76,8 +86,13 @@ const Input = ({ convStart, setConvStart }) => {
           {/* Icons */}
           <div className="flex items-center justify-between w-full text-xl gap-3">
             <div>
-              <i className="ri-add-line cursor-pointer" onClick={componentVisible}></i>
-              {showComponent && <Fileupload />}
+              <i
+                className="ri-add-line cursor-pointer"
+                onClick={componentVisible}
+              ></i>
+              {showComponent && (
+                <Fileupload file={file} setFile={setFile} promt={message} />
+              )}
             </div>
             <div className="flex items-center justify-center gap-3">
               <i className="ri-mic-line"></i>
@@ -90,7 +105,7 @@ const Input = ({ convStart, setConvStart }) => {
 
           {/* Textarea */}
           <textarea
-            {...register("message")}
+            {...register("message", { required: "Promt not Empty" })}
             ref={(el) => {
               register("message").ref(el); // react-hook-form
               textareaRef.current = el; // for auto-resize
