@@ -79,7 +79,7 @@ const Home = () => {
                 </div>
               )}
 
-              <div className="self-start w-full text-black">
+              <div className="self-start w-full">
                   <Botmsg msg={botMsg} />
               </div>
             </React.Fragment>

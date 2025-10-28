@@ -1,9 +1,6 @@
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const cors = require("cors");
-const authRoute = require("./routes/auth.routes");
-const chatRoute = require("./routes/chat.routes");
-const uploadRoute = require("./routes/msg.routes");
 
 const app = express();
 app.use(express.json());
@@ -15,10 +12,19 @@ app.use(
   })
 );
 
-app.get("/",(req,res)=>{
-  res.send("connect")
-})
-app.use("/api/auth", authRoute);
-app.use("/api/chat", chatRoute);
-app.use("/api/msg", uploadRoute);
+app.get("/", (req, res) => {
+  res.send("connect");
+});
+app.use("/api/auth", (req, res, next) => {
+  const authRoute = require("./routes/auth.routes");
+  authRoute(req, res, next);
+});
+app.use("/api/chat", (req, res, next) => {
+  const chatRoute = require("./routes/chat.routes");
+  chatRoute(req, res, next);
+});
+app.use("/api/msg", (req, res, next) => {
+  const uploadRoute = require("./routes/msg.routes");
+  uploadRoute(req, res, next);
+});
 module.exports = app;

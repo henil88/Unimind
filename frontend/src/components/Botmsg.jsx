@@ -13,7 +13,27 @@ export default function Botmsg({ msg }) {
     }
   }
 
-  const markdown = parsedMsg?.text || "";
+  if (!parsedMsg) {
+    return console.log("invalid response");
+  }
+
+  // Raw markdown
+  let markdown = parsedMsg?.text || "";
+
+  // === AUTO-UNWRAP: if the whole payload is a single fenced block, unwrap it ===
+  // This only unwraps the outermost fenced block (```...```) and leaves other code blocks alone.
+  const fencedListMatch = markdown.match(/^\s*```(?:\w*\n)?([\s\S]*?)```\s*$/);
+  if (fencedListMatch) {
+    // only unwrap if the inner content *looks like a markdown list* (lines starting with * - or +)
+    const inner = fencedListMatch[1];
+    const looksLikeList = inner
+      .split("\n")
+      .some((line) => /^\s*([*\-+])\s+/.test(line));
+    if (looksLikeList) {
+      markdown = inner.trim();
+    }
+  }
+
   const msgCharts = parsedMsg?.charts || [];
 
   // Chart options generator function
@@ -50,17 +70,27 @@ export default function Botmsg({ msg }) {
   });
 
   return (
-    <div className="p-3 my-2 text-black rounded-lg max-w-full space-y-8 break-normal">
+    <div className="p-3 my-2 rounded-lg max-w-full space-y-8 break-normal">
+      {/* Force-safe CSS for list rendering in case global styles removed bullets */}
+      <style>{`
+        /* Scope this CSS to the markdown output */
+        .botmsg-markdown ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.5rem; }
+        .botmsg-markdown ol { list-style: decimal; padding-left: 1.25rem; margin-top: 0.5rem; }
+        .botmsg-markdown li { margin: 0.25rem 0; }
+        /* Optional: better code-block appearance */
+        .botmsg-markdown pre { background: #FFF7D9  ; color: #f8fafc; padding: 0.75rem; border-radius: 0.5rem; overflow: auto; }
+      `}</style>
+
       {/* Markdown Preview */}
       <MDEditor.Markdown
         source={markdown}
+        className="botmsg-markdown"
         style={{
           fontSize: "1em",
-          color:"black",
-          backgroundColor: "#FFFBEB", // Tailwind bg-gray-900
+          backgroundColor: "#FFF9E8",
           borderRadius: "0.5rem",
           padding: "1rem",
-          // whiteSpace: "pre-wrap",
+          color: "#2D2D2D",
         }}
       />
 

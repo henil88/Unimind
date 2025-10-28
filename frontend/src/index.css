@@ -145,3 +145,49 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+
+/* md reader code */
+/* === General Code Styling === */
+pre code {
+  background-color: #FFF3D6 !important; /* Light warm cream */
+  color: #2D2D2D !important;
+  padding: 12px;
+  border-radius: 8px;
+  display: block;
+  font-family: "Fira Code", monospace;
+  font-size: 0.95em;
+}
+
+code {
+  background-color: #FFF5DD !important;
+  color: #D97706 !important; /* default inline code color */
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace;
+}
+
+/* === Syntax Highlighting Overrides === */
+.token.keyword,
+.token.function,
+.token.class-name {
+  color: #0D6EFD !important; /* Deep modern blue */
+  font-weight: 600;
+}
+
+.token.string {
+  color: #16A34A !important; /* soft green */
+}
+
+.token.number {
+  color: #CA8A04 !important; /* golden amber */
+}
+
+.token.operator {
+  color: #DC2626 !important; /* red for operators */
+}
+
+.token.comment {
+  color: #6B7280 !important; /* gray for comments */
+  font-style: italic;
+}
