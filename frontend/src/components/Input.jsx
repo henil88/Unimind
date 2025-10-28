@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form";
 import "remixicon/fonts/remixicon.css";
 import { useDispatch } from "react-redux";
 import { sendChatMessage } from "@/store/slice/ChatSlice/chatAction";
+import Fileupload from "./Fileupload";
 
 const Input = ({ convStart, setConvStart }) => {
   const { register, handleSubmit, reset, watch } = useForm();
+  const [showComponent, setShowComponent] = useState(false);
   const textareaRef = useRef(null);
   const message = watch("message", "");
   const dispatch = useDispatch();
@@ -42,7 +44,7 @@ const Input = ({ convStart, setConvStart }) => {
 
   const onSubmit = (data) => {
     const text = data.message?.trim();
-    console.log(text)
+    console.log(text);
     if (!text) return;
 
     if (convStart) setConvStart(false);
@@ -54,8 +56,12 @@ const Input = ({ convStart, setConvStart }) => {
     reset();
   };
 
+  const componentVisible = () => {
+    setShowComponent((prev) => !prev);
+  };
+
   return (
-    <div className="flex flex-col gap-[2rem]">
+    <div className="flex flex-col gap-[4rem]">
       {/* Title */}
       <h1 className="font-semibold text-center text-[5vw] ms:text-xl xl:text-[1.5vw]">
         {convStart ? title : ""}
@@ -69,7 +75,10 @@ const Input = ({ convStart, setConvStart }) => {
         <div className="border min-h-[2rem] px-2 py-2 rounded-[10px] flex flex-col-reverse sm:flex-col w-full max-w-full md:max-w-2/3 lg:max-w-1/2 bg-[#fff]">
           {/* Icons */}
           <div className="flex items-center justify-between w-full text-xl gap-3">
-            <i className="ri-add-line"></i>
+            <div>
+              <i className="ri-add-line cursor-pointer" onClick={componentVisible}></i>
+              {showComponent && <Fileupload />}
+            </div>
             <div className="flex items-center justify-center gap-3">
               <i className="ri-mic-line"></i>
               <i
@@ -84,7 +93,7 @@ const Input = ({ convStart, setConvStart }) => {
             {...register("message")}
             ref={(el) => {
               register("message").ref(el); // react-hook-form
-              textareaRef.current = el;     // for auto-resize
+              textareaRef.current = el; // for auto-resize
             }}
             className="w-full h-auto resize-none overflow-y-auto outline-0 p-2"
             placeholder="Type something..."
