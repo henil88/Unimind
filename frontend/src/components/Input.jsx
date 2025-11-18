@@ -85,7 +85,7 @@ const Input = ({ convStart, setConvStart }) => {
         <div className="border min-h-[2rem] px-2 py-2 rounded-[10px] flex flex-col-reverse sm:flex-col w-full max-w-full md:max-w-2/3 lg:max-w-1/2 bg-[#fff]">
           {/* Icons */}
           <div className="flex items-center justify-between w-full text-xl gap-3">
-            <div>
+            <div className="flex gap-2 items-center">
               <i
                 className="ri-add-line cursor-pointer"
                 onClick={componentVisible}

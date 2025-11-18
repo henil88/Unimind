@@ -1,11 +1,17 @@
 import { uploadFile } from "@/store/slice/ChatSlice/uploadFileAction";
 import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const Fileupload = ({ file, setFile, promt }) => {
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.file || {});
+  const toastId = "unique-error-toast";
+
+  if (error && !toast.isActive(toastId)) {
+    toast.error(error, { toastId });
+  }
 
   const handleUpload = (event) => {
     const selectedFile = event.target.files[0];
@@ -43,18 +49,8 @@ const Fileupload = ({ file, setFile, promt }) => {
 
       {/* Custom Button/Text */}
       <div
-        className="xs:top-[37%] top-[34%] sm:top-[10%] ms:top-[11%] xl:top-[11%]"
+        className="custom-button"
         onClick={handleCustomClick}
-        style={{
-          cursor: "pointer",
-          padding: "10px 10px",
-          display: "inline-block",
-          textAlign: "center",
-          fontSize: "12px",
-          borderRadius: "10px",
-          backgroundColor: "#FEF3C6",
-          position: "absolute",
-        }}
       >
         🔗 <strong>upload File & Images</strong>
       </div>
@@ -65,13 +61,14 @@ const Fileupload = ({ file, setFile, promt }) => {
           <p>
             <strong>File: </strong> {file.name.slice(0, 12) + "..."}
           </p>
-          <p>
-            <strong>Type: </strong> {file.type}
-          </p>
         </div>
       )}
-      {loading && <p className="text-xs text-blue-500">Uploading...</p>}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {loading && (
+        <div className="flex items-center gap-2 text-xs text-blue-500">
+          <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          Uploading...
+        </div>
+      )}
     </div>
   );
 };
