@@ -1,15 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { connected: false, botMessages: [], userMessages: [] };
+const initialState = { connected: false, messages: [] };
 const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
+    // action payload must be a message object:
+    // { id, role: "user"|"bot", type: "text"|"file", text?, file?, fileInfo?, processedData? }
     messageSend: (state, action) => {
-      state.userMessages.push(action.payload);
+      state.messages.push(action.payload);
     },
     messageReceive: (state, action) => {
-      state.botMessages.push(action.payload);
+      state.messages.push(action.payload);
     },
     setConnection: (state, action) => {
       state.connected = action.payload;

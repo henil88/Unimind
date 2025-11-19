@@ -16,9 +16,12 @@ async function handleUpload(req, res) {
     // Decide prompt based on file type
     if (ext === ".xls" || ext === ".xlsx") {
       prompt = req.body.prompt || "Summarize this Excel file";
-    } else if (ext === ".pdf") {
-      prompt = req.body.prompt || "Summarize this PDF document";
-    } else if (ext === ".doc" || ext === ".docx") {
+    } 
+    // else if (ext === ".pdf") {
+    //   prompt = req.body.prompt || "Summarize this PDF document";
+    // } 
+    
+    else if (ext === ".doc" || ext === ".docx") {
       prompt = req.body.prompt || "Summarize this Word document";
     } else {
       prompt = req.body.prompt || "Summarize this document";
@@ -35,7 +38,6 @@ async function handleUpload(req, res) {
       aiRes,
     });
   } catch (err) {
-    console.error("handleUpload error:", err);
     res.status(500).json({ error: err.message });
   }
 }

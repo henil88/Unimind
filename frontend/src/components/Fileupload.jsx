@@ -1,14 +1,13 @@
-import { uploadFile } from "@/store/slice/ChatSlice/uploadFileAction";
-import React, { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useRef } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const Fileupload = ({ file, setFile, promt }) => {
   const fileInputRef = useRef(null);
-  const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.file || {});
   const toastId = "unique-error-toast";
 
+  // show toast only for real errors (error exists and is not a processing status)
   if (error && !toast.isActive(toastId)) {
     toast.error(error, { toastId });
   }
@@ -16,11 +15,7 @@ const Fileupload = ({ file, setFile, promt }) => {
   const handleUpload = (event) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
-    else {
-      setFile(selectedFile);
-      console.log("File Name:", selectedFile.name);
-      console.log("File Type:", selectedFile.type);
-    }
+    setFile(selectedFile);
   };
 
   const handleCustomClick = () => {

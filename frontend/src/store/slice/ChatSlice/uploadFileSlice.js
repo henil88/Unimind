@@ -7,15 +7,19 @@ const uploadFileSlice = createSlice({
   initialState,
   reducers: {
     fileUploadReq: (state) => {
-      (state.loading = true), (state.error = null);
+      state.loading = true;
+      state.error = null;
     },
     fileUploadSuccess: (state, action) => {
-      (state.loading = false), (state.file = action.payload.file);
+      state.loading = false;
+      // store full payload (server response), or processing status object
+      state.file = action.payload;
+      state.error = null;
     },
     fileUploadFail: (state, action) => {
-      (state.loading = false),
-        (state.file = null),
-        (state.error = action.payload);
+      state.loading = false;
+      state.file = null;
+      state.error = action.payload;
     },
   },
 });

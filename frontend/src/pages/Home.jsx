@@ -5,6 +5,7 @@ import Maintxt from "@/reactBitsEffect/Maintxt";
 import Input from "@/components/Input";
 import Sidebar from "@/components/Sidebar";
 import Botmsg from "@/components/Botmsg";
+import FileUi from "@/components/FileUi";
 import { initSocket } from "@/lib/socketInitilize";
 import { listenChatEvent } from "@/store/slice/ChatSlice/chatAction";
 import Typinganimation from "@/components/Typinganimation";
@@ -14,14 +15,11 @@ const Home = () => {
   const [convStart, setConvStart] = useState(true);
 
   const dispatch = useDispatch();
-  const { botMessages, userMessages } = useSelector((state) => state.chat);
+  const { messages } = useSelector((state) => state.chat);
 
   const chatContainerRef = useRef(null);
 
-
-
-  
-  // 1️⃣ Load animation timer
+  // load animation
   useEffect(() => {
     const timer = setTimeout(() => setTitleLoad(true), 3000);
     return () => clearTimeout(timer);
@@ -29,9 +27,7 @@ const Home = () => {
 
   useEffect(() => {
     initSocket(import.meta.env.VITE_SOCKET_URL);
-
     dispatch(listenChatEvent());
-
     return () => {
       // disconnectSocket();
     };
@@ -39,10 +35,9 @@ const Home = () => {
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [botMessages, userMessages]);
+  }, [messages]);
 
   return (
     <div className="flex w-full h-[calc(100vh-8vh)] overflow-hidden flex-col items-center relative overflow-y-hidden">
@@ -57,9 +52,7 @@ const Home = () => {
           <Maintxt />
           <h1
             className={`mt-10 flex items-center justify-center gap-2 text-2xl font-exo md:text-[2rem] lg:text-[2.2rem] transition-all duration-700 ${
-              titleLoad
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5"
+              titleLoad ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             }`}
           >
             Creative <RotatingTextDemo />
@@ -71,31 +64,36 @@ const Home = () => {
           id="chatContainer"
           className="flex w-full md:w-[calc(100%-210px)] flex-col gap-5 mt-2 overflow-x-hidden overflow-y-auto scrollbar-hide h-[82%] md:ml-[28vw] md:px-[5vw] lg:max-w-[60%] lg:ml-[25vw] lg:px-0 xl:max-w-[50%] xl:ml-[14vw] break-all px-2"
         >
-          {botMessages.map((botMsg, idx) => (
-            <React.Fragment key={idx}>
-              {userMessages[idx] && (
+          {messages.map((msg, idx) => (
+            <div key={msg.id || idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              {msg.role === "user" ? (
                 <div className="self-end max-w-[70%] bg-amber-50 px-3 py-2 mb-2 rounded-[10px]">
-                  <h1>{userMessages[idx].text || userMessages[idx]}</h1>
+                  {msg.type === "file" ? (
+                    <>
+                      <FileUi file={msg.fileInfo ? { ...msg.fileInfo, preview: msg.file } : { name: "file", preview: msg.file }} />
+                      {msg.text && <div className="mt-2">{msg.text}</div>}
+                    </>
+                  ) : (
+                    <div>{msg.text}</div>
+                  )}
+                </div>
+              ) : (
+                <div className="self-start w-full max-w-[70%] bg-white px-3 py-2 mb-2 rounded-[10px]">
+                  {msg.type === "file" ? (
+                    <>
+                      <FileUi file={msg.fileInfo ? { ...msg.fileInfo, preview: msg.file } : { name: "file", preview: msg.file }} />
+                      {msg.text && <div className="mt-2">{msg.text}</div>}
+                    </>
+                  ) : (
+                    <div>{msg.text}</div>
+                  )}
                 </div>
               )}
-
-              <div className="self-start w-full">
-                  <Botmsg msg={botMsg} />
-              </div>
-            </React.Fragment>
-          ))}
-          {/* Only show extra user message if userMessages.length > botMessages.length
-          and the last bot message index is less than userMessages.length - 1 */}
-          {userMessages.length > botMessages.length && (
-            <div className="self-end max-w-[70%] bg-amber-50 px-3 py-2 mb-2 rounded-[10px]">
-              <h1>
-                {userMessages[botMessages.length].text ||
-                  userMessages[botMessages.length]}
-              </h1>
             </div>
-          )}
-          {/* Typing indicator: show if user sent a message and bot hasn't replied yet */}
-          {userMessages.length > botMessages.length && <Typinganimation />}
+          ))}
+
+          {/* typing indicator heuristics: if last msg is user and no bot after */}
+          {messages.length > 0 && messages[messages.length - 1].role === "user" && <Typinganimation />}
         </div>
       )}
 
@@ -108,11 +106,7 @@ const Home = () => {
           top: convStart ? "45vh" : "62vh",
         }}
       >
-        <Input
-          className="w-full"
-          convStart={convStart}
-          setConvStart={setConvStart}
-        />
+        <Input className="w-full" convStart={convStart} setConvStart={setConvStart} />
       </div>
     </div>
   );
