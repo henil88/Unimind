@@ -16,11 +16,10 @@ async function handleUpload(req, res) {
     // Decide prompt based on file type
     if (ext === ".xls" || ext === ".xlsx") {
       prompt = req.body.prompt || "Summarize this Excel file";
-    } 
+    }
     // else if (ext === ".pdf") {
     //   prompt = req.body.prompt || "Summarize this PDF document";
-    // } 
-    
+    // }
     else if (ext === ".doc" || ext === ".docx") {
       prompt = req.body.prompt || "Summarize this Word document";
     } else {
@@ -36,8 +35,10 @@ async function handleUpload(req, res) {
     res.status(200).json({
       message: "file data",
       aiRes,
+      prompt,
     });
   } catch (err) {
+    console.log(err.message);
     res.status(500).json({ error: err.message });
   }
 }

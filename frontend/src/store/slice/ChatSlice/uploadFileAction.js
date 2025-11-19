@@ -12,54 +12,49 @@ export const uploadFile = (data, userMessageId = null) => async (dispatch) => {
   dispatch(fileUploadReq());
   try {
     const res = await uploadFileToServer(data);
-    // robust extraction of payload
+
+    // NOTE: backend returns { message, aiRes, prompt } — parse aiRes/prompt
     const payload = res?.data ?? res ?? {};
 
-    // notify upload slice with full payload
+    // store full payload
     dispatch(fileUploadSuccess(payload));
 
-    // normalize bot response (if backend returned immediate processed result)
-    const result = payload;
-    if (
-      result &&
-      (result.text ||
-        result.type ||
-        result.fileInfo ||
-        result.processedData)
-    ) {
+    const aiRes = payload.aiRes ?? payload.data ?? payload;
+    const prompt = payload.prompt ?? null;
+
+    const botText =
+      (aiRes && (aiRes.text ?? aiRes.message)) ??
+      (typeof aiRes === "string" ? aiRes : "") ??
+      "";
+    const botFileInfo = aiRes?.fileInfo ?? aiRes?.file ?? payload.fileInfo ?? null;
+    const processedData = aiRes?.processedData ?? payload.processedData ?? null;
+
+    if (botText || botFileInfo || processedData) {
       const botMessage = {
-        id: result.id || makeId(),
+        id: (aiRes && aiRes.id) || payload.id || makeId(),
         role: "bot",
-        type: result.type || (result.fileInfo ? "file" : "text"),
-        text:
-          result.text ??
-          result.message ??
-          result.data ??
-          (typeof result === "string" ? result : ""),
-        processedData: result.processedData ?? null,
-        fileInfo: result.fileInfo ?? result.file ?? null,
+        type: botFileInfo ? "file" : "text",
+        text: botText,
+        processedData,
+        fileInfo: botFileInfo,
         replyTo: userMessageId,
+        originalPrompt: prompt,
       };
       dispatch(messageReceive(botMessage));
     }
-    // If payload contains no reply info, assume backend will send reply via socket later.
+    // otherwise assume backend will emit reply via socket later
   } catch (err) {
-    console.error(err);
     const status = err?.response?.status;
     const errorMsg =
       err?.response?.data?.message || err?.message || "File uploading Failed";
 
-    // If backend returned 5xx, assume async processing — do not show immediate bot error.
     if (status && status >= 500 && status < 600) {
-      // mark as "processing" success so UI doesn't show a failure
+      // treat 5xx as "processing" — no immediate bot error
       dispatch(fileUploadSuccess({ status: "processing", meta: { status } }));
-      // do NOT dispatch messageReceive error; wait for socket reply
       return;
     }
 
-    // Non-5xx errors are shown as failures
     dispatch(fileUploadFail(errorMsg));
-
     dispatch(
       messageReceive({
         id: makeId(),

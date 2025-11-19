@@ -5,6 +5,7 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
+    // NOTE: cleaned reducers — removed debug logs for production
     // action payload must be a message object:
     // { id, role: "user"|"bot", type: "text"|"file", text?, file?, fileInfo?, processedData? }
     messageSend: (state, action) => {

@@ -4,7 +4,7 @@ import RotatingTextDemo from "../reactBitsEffect/RotatingTextDemo";
 import Maintxt from "@/reactBitsEffect/Maintxt";
 import Input from "@/components/Input";
 import Sidebar from "@/components/Sidebar";
-import Botmsg from "@/components/Botmsg";
+import Botmsg from "@/components/Botmsg"; // <--- added import to render markdown/charts
 import FileUi from "@/components/FileUi";
 import { initSocket } from "@/lib/socketInitilize";
 import { listenChatEvent } from "@/store/slice/ChatSlice/chatAction";
@@ -33,8 +33,16 @@ const Home = () => {
     };
   }, [dispatch]);
 
+  // Auto-open chat if any messages arrive (ensures backend replies are visible)
+  useEffect(() => {
+    if (messages && messages.length > 0 && convStart) {
+      setConvStart(false);
+    }
+  }, [messages, convStart]);
+
   useEffect(() => {
     if (chatContainerRef.current) {
+      // keep default behavior; added bottom padding prevents the last item from being hidden
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
@@ -62,30 +70,30 @@ const Home = () => {
         <div
           ref={chatContainerRef}
           id="chatContainer"
-          className="flex w-full md:w-[calc(100%-210px)] flex-col gap-5 mt-2 overflow-x-hidden overflow-y-auto scrollbar-hide h-[82%] md:ml-[28vw] md:px-[5vw] lg:max-w-[60%] lg:ml-[25vw] lg:px-0 xl:max-w-[50%] xl:ml-[14vw] break-all px-2"
+          className="flex w-full md:w-[calc(100%-210px)] flex-col gap-5 mt-2 overflow-x-hidden overflow-y-auto scrollbar-hide h-[82%] md:ml-[28vw] md:px-[5vw] lg:max-w-[60%] lg:ml-[25vw] lg:px-0 xl:max-w-[50%] xl:ml-[14vw] break-words px-2 pb-40" /* pb-40 prevents last message being hidden by input */
         >
           {messages.map((msg, idx) => (
             <div key={msg.id || idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "user" ? (
-                <div className="self-end max-w-[70%] bg-amber-50 px-3 py-2 mb-2 rounded-[10px]">
+                <div className="self-end max-w-[70%] bg-amber-50 px-3 py-2 mb-2 rounded-[10px] break-words whitespace-pre-wrap">
                   {msg.type === "file" ? (
-                    <>
+                    <div className="flex flex-col gap-2">
                       <FileUi file={msg.fileInfo ? { ...msg.fileInfo, preview: msg.file } : { name: "file", preview: msg.file }} />
-                      {msg.text && <div className="mt-2">{msg.text}</div>}
-                    </>
+                      {msg.text && <div className="text-sm break-words whitespace-pre-wrap mt-1">{msg.text}</div>}
+                    </div>
                   ) : (
-                    <div>{msg.text}</div>
+                    <div className="text-sm break-words whitespace-pre-wrap">{msg.text}</div>
                   )}
                 </div>
               ) : (
-                <div className="self-start w-full max-w-[70%] bg-white px-3 py-2 mb-2 rounded-[10px]">
-                  {msg.type === "file" ? (
-                    <>
+                <div className="self-start w-full max-w-[85%] mb-2"> {/* CHANGED: allow bot bubble to expand wider so charts/code fit better */}
+                  {msg.fileInfo ? (
+                    <div className="flex flex-col gap-2">
                       <FileUi file={msg.fileInfo ? { ...msg.fileInfo, preview: msg.file } : { name: "file", preview: msg.file }} />
-                      {msg.text && <div className="mt-2">{msg.text}</div>}
-                    </>
+                      <Botmsg msg={msg.processedData ?? msg.text ?? msg} />
+                    </div>
                   ) : (
-                    <div>{msg.text}</div>
+                    <Botmsg msg={msg.text ?? msg} />
                   )}
                 </div>
               )}

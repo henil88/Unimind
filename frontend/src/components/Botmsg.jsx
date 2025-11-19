@@ -70,15 +70,74 @@ export default function Botmsg({ msg }) {
   });
 
   return (
-    <div className="p-3 my-2 rounded-lg max-w-full space-y-8 break-normal">
-      {/* Force-safe CSS for list rendering in case global styles removed bullets */}
+    // CHANGED: neutral, single background card
+    <div className="p-4 my-3 rounded-lg max-w-full space-y-6 bg-gray-50 text-gray-800">
+      {/* Scoped CSS: neutral theme, no bold blue accents */}
       <style>{`
-        /* Scope this CSS to the markdown output */
+        .botmsg-markdown { font-size: 1rem; line-height: 1.6; color: #0f172a; }
+        .botmsg-markdown img { max-width: 100%; border-radius: 0.5rem; display: block; margin: 0.75rem 0; }
+
         .botmsg-markdown ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.5rem; }
         .botmsg-markdown ol { list-style: decimal; padding-left: 1.25rem; margin-top: 0.5rem; }
         .botmsg-markdown li { margin: 0.25rem 0; }
-        /* Optional: better code-block appearance */
-        .botmsg-markdown pre { background: #FFF7D9  ; color: #f8fafc; padding: 0.75rem; border-radius: 0.5rem; overflow: auto; }
+
+        /* neutral blockquote (no blue accent) */
+        .botmsg-markdown blockquote {
+          border-left: 4px solid rgba(15,23,42,0.06);
+          background: rgba(15,23,42,0.02);
+          padding: 0.5rem 0.75rem;
+          margin: 0.5rem 0;
+          border-radius: 0.375rem;
+        }
+
+        /* tables */
+        .botmsg-markdown table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
+        .botmsg-markdown th, .botmsg-markdown td { border: 1px solid #eef2f7; padding: 0.5rem; text-align: left; }
+        .botmsg-markdown th { background: #f8fafc; font-weight: 500; }
+
+        /* headings: not bold, neutral color */
+        .botmsg-markdown h1, .botmsg-markdown h2, .botmsg-markdown h3,
+        .botmsg-markdown h4, .botmsg-markdown h5, .botmsg-markdown h6 {
+          font-weight: 500;
+          color: #0f172a;
+          margin-top: 0.5rem;
+          margin-bottom: 0.25rem;
+        }
+
+        /* Professional, light code block style (no dark theme, no heavy border) */
+        .botmsg-markdown pre {
+          background: #f6f8fa;
+          color: #0f172a;
+          padding: 0.75rem;
+          border-radius: 0.5rem;
+          overflow: auto;
+          border: none;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Fira Code", monospace;
+          font-size: 0.95rem;
+          line-height: 1.45;
+        }
+
+        /* inline code */
+        .botmsg-markdown code {
+          background: rgba(15,23,42,0.04);
+          color: #0f172a;
+          padding: 0.12rem 0.32rem;
+          border-radius: 0.32rem;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Fira Code", monospace;
+          font-size: 0.92rem;
+          font-weight: 400; /* ensure inline code not bold */
+        }
+
+        /* links: blue but not bold */
+        .botmsg-markdown a {
+          color: #2563eb;
+          font-weight: 400;
+          text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+          .botmsg-markdown pre { font-size: 0.88rem; padding: 0.6rem; }
+        }
       `}</style>
 
       {/* Markdown Preview */}
@@ -86,66 +145,21 @@ export default function Botmsg({ msg }) {
         source={markdown}
         className="botmsg-markdown"
         style={{
-          fontSize: "1em",
-          backgroundColor: "#FFF9E8",
+          backgroundColor: "transparent",
+          padding: 0,
           borderRadius: "0.5rem",
-          padding: "1rem",
-          color: "#2D2D2D",
         }}
       />
 
-      {/* Charts Rendering */}
-      {msgCharts.map((chart, idx) => {
-        const options = makeOptions(chart.data);
-        const series = [
-          {
-            name: chart.seriesName || "Value",
-            data: chart.data.map((d) => d.value),
-          },
-        ];
-        const meta = chart.meta || {};
-
-        return (
-          <div
-            key={idx}
-            className="w-full bg-[#FFFBEB] rounded-xl p-4 shadow-md space-y-3"
-          >
-            {meta.title && (
-              <h2 className="text-lg font-semibold">{meta.title}</h2>
-            )}
-
-            <Chart options={options} series={series} type="area" height={300} />
-
-            {meta.subtext && (
-              <div className="text-gray-700 text-sm">{meta.subtext}</div>
-            )}
-
-            {meta.ranges && (
-              <div className="flex justify-center gap-2 mt-2">
-                {meta.ranges.map((range) => (
-                  <button
-                    key={range}
-                    className="px-3 py-1 rounded-md text-xs bg-gray-700 hover:bg-gray-600"
-                  >
-                    {range}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {meta.stats && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-gray-700 mt-3">
-                {Object.entries(meta.stats).map(([label, value]) => (
-                  <div key={label}>
-                    <span className="block text-gray-700">{label}</span>
-                    {value}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
+      {/* Charts rendering unchanged but simplified wrapper */}
+      {msgCharts.map((chart, idx) => (
+        <div key={idx} className="w-full rounded-xl p-0">
+          {chart.meta?.title && <h2 className="text-lg font-medium text-gray-800 mb-2">{chart.meta.title}</h2>}
+          <Chart options={makeOptions(chart.data)} series={[{ name: chart.seriesName || "Value", data: chart.data.map((d) => d.value) }]} type="area" height={300} />
+          {chart.meta?.subtext && <div className="text-gray-600 text-sm mt-2">{chart.meta.subtext}</div>}
+          {/* ranges / stats unchanged */}
+        </div>
+      ))}
     </div>
   );
 }

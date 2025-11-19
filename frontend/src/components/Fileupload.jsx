@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -7,10 +7,12 @@ const Fileupload = ({ file, setFile, promt }) => {
   const { loading, error } = useSelector((state) => state.file || {});
   const toastId = "unique-error-toast";
 
-  // show toast only for real errors (error exists and is not a processing status)
-  if (error && !toast.isActive(toastId)) {
-    toast.error(error, { toastId });
-  }
+  // ✅ show toast when error changes (useEffect avoids toasting during render)
+  useEffect(() => {
+    if (error && !toast.isActive(toastId)) {
+      toast.error(error, { toastId });
+    }
+  }, [error]);
 
   const handleUpload = (event) => {
     const selectedFile = event.target.files[0];
