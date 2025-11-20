@@ -36,6 +36,9 @@ export const listenChatEvent = () => (dispatch) => {
     dispatch(messageReceive(normalized));
   });
 
+  /* event removed */
+
+  /*
   socket.on("bot_message", (msg) => {
     const normalized =
       typeof msg === "string"
@@ -50,6 +53,8 @@ export const listenChatEvent = () => (dispatch) => {
           };
     dispatch(messageReceive(normalized));
   });
+
+  */
 
   socket.on("connection_err", (err) => {
     console.warn("socket connection err:", err);

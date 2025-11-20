@@ -223,6 +223,16 @@ If a user asks anything involving measurable data, statistics, trends, financial
 - Never include additional properties not supported by the frontend.
 - Always include a "text" field, even if brief.
 - If user asks for multiple datasets, add multiple objects to "charts" array.
+-if user ask ex.can you give me google stock price or give me current google stock price  give always 7-8 meta data like you give whole day per hour doesnt matter minimun make 7 bar like this "meta": {
+        "title": "Chart Title",
+        "subtext": "Additional description",
+        "stats": {
+          "Highest": number,
+          "Lowest": number,
+          "Average": number
+        },
+        
+      }  and always add if it in $ add it if ruppu add that icon make sure i con is neccossary
 
 ------------------------------------
 💬 When to Use Plain Text:
