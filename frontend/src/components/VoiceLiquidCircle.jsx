@@ -111,7 +111,9 @@ function FluidCircle({ analyserRef }) {
       uniforms: {
         u_time: { value: 0 },
         u_scale: { value: 1.0 },
-        u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+        u_resolution: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
         u_colorA: { value: new THREE.Color("#e8fbff") },
         u_colorB: { value: new THREE.Color("#7ed0ff") },
       },
@@ -131,7 +133,8 @@ function FluidCircle({ analyserRef }) {
     if (material) material.uniforms.u_time.value = clock.getElapsedTime();
 
     // update resolution uniform with current canvas size to correct aspect
-    if (material) material.uniforms.u_resolution.value.set(size.width, size.height);
+    if (material)
+      material.uniforms.u_resolution.value.set(size.width, size.height);
 
     // read analyser and compute RMS amplitude
     const analyser = analyserRef.current;
@@ -161,7 +164,8 @@ function FluidCircle({ analyserRef }) {
       meshRef.current.scale.set(lerped, lerped, lerped);
     }
 
-    if (material) material.uniforms.u_scale.value = 1.0 + smoothRef.current * 0.6;
+    if (material)
+      material.uniforms.u_scale.value = 1.0 + smoothRef.current * 0.6;
 
     // attach material ref once
     materialRef.current = material;
@@ -191,7 +195,9 @@ export default function VoiceLiquidCircle() {
 
     async function initMic() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         if (!mounted) {
           stream.getTracks().forEach((t) => t.stop());
           return;
@@ -209,7 +215,10 @@ export default function VoiceLiquidCircle() {
         if (audioCtx.state === "suspended") await audioCtx.resume();
       } catch (err) {
         // do not throw UI errors — fail gracefully
-        console.warn("VoiceLiquidCircle: microphone not available or permission denied.", err);
+        console.warn(
+          "VoiceLiquidCircle: microphone not available or permission denied.",
+          err
+        );
       }
     }
 
@@ -237,7 +246,12 @@ export default function VoiceLiquidCircle() {
       <div className="w-full h-full">
         <Canvas
           gl={{ antialias: true, alpha: true }}
-          style={{ width: "100%", height: "100%", display: "block", background: "transparent" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "block",
+            background: "transparent",
+          }}
           orthographic
           camera={{ zoom: 150, position: [0, 0, 10] }}
         >

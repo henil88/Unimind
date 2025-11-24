@@ -139,7 +139,7 @@ const Input = ({ convStart, setConvStart }) => {
               )}
             </div>
             <div className="flex items-center justify-center gap-3">
-              <i className="ri-mic-line" onClick={goToVoice}></i>
+              <i className="ri-mic-line cursor-pointer" onClick={goToVoice}></i>
 
               <i
                 className="ri-send-plane-fill cursor-pointer"

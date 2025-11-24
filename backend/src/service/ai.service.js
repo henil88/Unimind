@@ -232,8 +232,7 @@ If a user asks anything involving measurable data, statistics, trends, financial
           "Average": number
         },
         
-      }  and always add if it in $ add it if ruppu add that icon make sure i con is neccossary
-
+      }  and always add that all price which formate like $,€,₹ etc...
 ------------------------------------
 💬 When to Use Plain Text:
 ------------------------------------
