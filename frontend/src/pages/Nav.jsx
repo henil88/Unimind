@@ -3,6 +3,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Login from "./Login";
 import SignUp from "./SignUp";
+import VoicePage from "./VoicePage";
 
 const Nav = () => {
   return (
@@ -14,11 +15,12 @@ const Nav = () => {
           <Link to="/auth/signup">Sign up</Link>
         </div>
       </nav>
-      
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<SignUp />} />
+        <Route path="/voicemode" element={<VoicePage />} />
       </Routes>
     </>
   );
