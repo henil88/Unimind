@@ -8,7 +8,7 @@ import VoicePage from "./VoicePage";
 const Nav = () => {
   return (
     <>
-      <nav className="flex items-center justify-between px-5 bg-blue-500 h-[8vh]">
+      <nav className="flex items-center justify-between px-5 bg-[#FFFFFF] h-[7.5vh] border-b-2 mb-[.5vh]">
         <Link to="/">UniMind</Link>
         <div className="flex items-center justify-between gap-10">
           <Link to="/auth/login">Log in</Link>

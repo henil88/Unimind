@@ -50,7 +50,7 @@ const Home = () => {
   return (
     <div className="flex w-full h-[calc(100vh-8vh)] overflow-hidden flex-col items-center relative overflow-y-hidden">
       {/* Sidebar */}
-      <div className="w-[200px] hidden md:block opacity-5">
+      <div className="w-[200px] hidden md:block">
         <Sidebar />
       </div>
 
