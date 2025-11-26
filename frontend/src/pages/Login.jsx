@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Googleauth from "@/components/Googleauth";
 
 const Login = () => {
+
+  
   const {
     register,
     handleSubmit,
@@ -20,6 +22,8 @@ const Login = () => {
   const formData = (data) => {
     dispatch(userLogin(data, navigate));
   };
+
+
 
   return (
     <div className="w-full h-[calc(100vh-9vh)] flex items-center justify-center">

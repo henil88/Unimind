@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { connected: false, messages: [] };
+const initialState = { connected: false, messages: [], title: null };
 const chatSlice = createSlice({
   name: "chat",
   initialState,
@@ -17,8 +17,12 @@ const chatSlice = createSlice({
     setConnection: (state, action) => {
       state.connected = action.payload;
     },
+    setTitle: (state, action) => {
+      state.title = action.payload.title;
+    },
   },
 });
 
-export const { messageSend, messageReceive, setConnection } = chatSlice.actions;
+export const { messageSend, messageReceive, setConnection, setTitle } =
+  chatSlice.actions;
 export default chatSlice.reducer;

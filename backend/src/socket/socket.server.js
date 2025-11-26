@@ -16,7 +16,7 @@ function initialSocketServer(httpServer) {
     socket.on("msg", async (msg) => {
       console.log("user-text:", msg);
       const aiRes = await aiResponse.chatTextResponse(msg);
-      // const aiFileRes = await aiResponse.docsReading(msg); 
+      
       socket.emit("ai-res", aiRes);
   
       // console.log(aiFileRes);
