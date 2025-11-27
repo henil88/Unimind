@@ -1,15 +1,21 @@
+import { chatTitle } from "@/api/chatTitleApi";
+import { findValidMessage } from "@/lib/findValidMessage";
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Sidebar = () => {
-  const titles = ["Hey, are you there?", "I’ll be there soon"];
-  const { title } = useSelector((state) => state.chat);
-  console.log(title);
-  if (title != null) {
-    titles.push(title);
-  }
+  const { titles } = useSelector((state) => state.chat);
+  const { messages, titleGenerated } = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
 
-  
+  useEffect(() => {
+    const validMsg = findValidMessage(messages);
+
+    if (!titleGenerated && validMsg) {
+      chatTitle(messages, dispatch, titleGenerated);
+    }
+  }, [messages]);
+
   return (
     <div
       className="bg-[#F2F4F7] h-screen absolute top-0 left-0
