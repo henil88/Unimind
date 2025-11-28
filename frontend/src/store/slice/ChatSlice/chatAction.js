@@ -26,10 +26,10 @@ export const listenChatEvent = () => (dispatch) => {
       typeof msg === "string"
         ? { id: makeId(), role: "bot", type: "text", text: msg }
         : {
-            id: msg.id || makeId(),
+            id: msg?.id || makeId(),
             role: "bot",
-            type: msg.type || "text",
-            text: msg.text ?? msg.data ?? msg.message ?? "",
+            type: msg?.type || "text",
+            text: msg?.text ?? msg.data ?? msg.message ?? "",
             processedData: msg.processedData ?? null,
             fileInfo: msg.fileInfo ?? null,
           };

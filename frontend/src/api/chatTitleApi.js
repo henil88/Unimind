@@ -9,6 +9,7 @@ export const chatTitle = async (messages, dispatch, titleGenerated) => {
   if (!validMsg) return;
 
   const res = await axiosInstance.post("/chat", { msg: validMsg });
+  console.log("req send");
   const title = res.data.title;
 
   if (title === "New Chat") return;
