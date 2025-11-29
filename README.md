@@ -25,7 +25,7 @@ It supports:
 ### 🔹 **AI & Chat**
 
 * Smart AI-powered responses
-* User-to-AI & user-to-user text chat
+* User-to-AI chat
 * Real-time communication using **Socket.IO**
 
 ### 🔹 **Multimodal Input**
@@ -43,7 +43,6 @@ It supports:
 * Smooth animations
 * Rotating text
 * Typing animation
-* Clean dark/light UI
 * Sidebar navigation
 
 ### 🔹 **Backend Structure**
