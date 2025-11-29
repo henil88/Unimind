@@ -208,11 +208,12 @@ npm install
 ### **Create `.env` file**
 
 ```
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-GOOGLE_CLIENT_ID=your_id
-GOOGLE_CLIENT_SECRET=your_secret
-ORIGIN=http://localhost:5173
+MONGODB_URL=your_mongodb_url
+JWT_SECRET=your_jwt_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_API_KEY=your_google_api_key
+FRONTEND_URL=http://localhost:5173
 ```
 
 ### **Run backend**
