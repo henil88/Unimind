@@ -234,8 +234,9 @@ npm install
 ### **Create `.env` file**
 
 ```
-VITE_BACKEND_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
+VITE_BASE_URL = http://localhost:3000/api
+VITE_SOCKET_URL = http://localhost:3000
+
 ```
 
 ### **Run frontend**
