@@ -7,7 +7,7 @@ const oAuth2 = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   /* this is redirect url we write postmessage  */
-  "http://localhost:3000/api/auth/loginOauth2"
+  `${process.env.FRONTEND_URL}+/api/auth/loginOauth2`
 );
 
 async function googleLink(req, res) {
