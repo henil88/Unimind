@@ -30,7 +30,11 @@ async function registerUser(req, res) {
   });
 
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   res.status(201).json({
     message: "user register success",
@@ -57,7 +61,11 @@ async function loginUser(req, res) {
   }
 
   const token = jwt.sign({ id: isUserExist._id }, process.env.JWT_SECRET);
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   res.status(200).json({
     message: "user login success",
@@ -141,7 +149,7 @@ async function oAuth2Login(req, res) {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
     });
 
     //  Success: redirect to frontend home
