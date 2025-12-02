@@ -25,7 +25,7 @@ It supports:
 ### 🔹 **AI & Chat**
 
 * Smart AI-powered responses
-* User-to-AI & user-to-user text chat
+* User-to-AI chat
 * Real-time communication using **Socket.IO**
 
 ### 🔹 **Multimodal Input**
@@ -43,7 +43,6 @@ It supports:
 * Smooth animations
 * Rotating text
 * Typing animation
-* Clean dark/light UI
 * Sidebar navigation
 
 ### 🔹 **Backend Structure**
@@ -208,11 +207,12 @@ npm install
 ### **Create `.env` file**
 
 ```
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-GOOGLE_CLIENT_ID=your_id
-GOOGLE_CLIENT_SECRET=your_secret
-ORIGIN=http://localhost:5173
+MONGODB_URL=your_mongodb_url
+JWT_SECRET=your_jwt_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_API_KEY=your_google_api_key
+FRONTEND_URL=http://localhost:5173
 ```
 
 ### **Run backend**
@@ -233,8 +233,9 @@ npm install
 ### **Create `.env` file**
 
 ```
-VITE_BACKEND_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
+VITE_BASE_URL = http://localhost:3000/api
+VITE_SOCKET_URL = http://localhost:3000
+
 ```
 
 ### **Run frontend**
