@@ -4,7 +4,7 @@ const aiResponse = require("../service/ai.service");
 function initialSocketServer(httpServer) {
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: process.env.FRONTEND_URL,
       methods: ["GET", "POST"],
     },
   });
